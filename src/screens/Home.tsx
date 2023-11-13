@@ -8,6 +8,8 @@ import {
   View,
 } from "react-native";
 import { PokemonCard } from "../components/PokemonCard";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { AllPokemon, getAllPokemon } from "../utils/api";
 
 interface Pokemon {
   name: string;
@@ -15,6 +17,13 @@ interface Pokemon {
 }
 
 export default function Home() {
+  // const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  //   useInfiniteQuery<AllPokemon>({
+  //     queryKey: ["pokemons"],
+  //     queryFn: getAllPokemon,
+  //     getNextPageParam: (lastPage: any) => lastPage.next,
+  //   });
+  // console.log(data);
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [next, setNext] = useState<string>();
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -54,6 +63,8 @@ export default function Home() {
   useEffect(() => {
     getPokemon();
   }, []);
+
+  if (isLoadingMore) return <ActivityIndicator />;
 
   return (
     <SafeAreaView style={styles.container}>

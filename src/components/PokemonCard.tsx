@@ -1,7 +1,17 @@
-import { View, StyleSheet } from "react-native";
+import { View, Image, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query/build/legacy/useQuery";
-import {Box, Heading, Image, Text, HStack, Stack, Pressable, Center} from "native-base"
+import { useQuery } from "@tanstack/react-query/";
+import { fetchFn } from "../utils/api";
+// import {
+//   Box,
+//   Heading,
+//   Image,
+//   Text,
+//   HStack,
+//   Stack,
+//   Pressable,
+//   Center,
+// } from "native-base";
 
 interface PokemonCardProps {
   url: string;
@@ -26,35 +36,72 @@ interface Pokemon {
   };
 }
 
-export function PokemonCard({ url, name }: PokemonCardProps) {
-  const [pokemon, setPokemon] = useState<Pokemon>();
-  //   const {isLoading, error, data} = useQuery(['pokemon', name], ()=>fetch);
+// export function PokemonCard({ url, name }: PokemonCardProps) {
+//   const [pokemon, setPokemon] = useState<Pokemon>();
 
+//   const getPokemon = async () => {
+//     try {
+//       const res = await fetch(url);
+//       const data = await res.json();
+
+//       setPokemon(data);
+//     } catch (error: any) {
+//       console.log("Error al obtener datos del pokemon - ", error.message);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getPokemon();
+//   }, []);
+
+//   if (!pokemon) return null;
+//   return (
+//     <View style={styles.container}>
+//       <Image
+//         source={{
+//           uri: pokemon.sprites.other["official-artwork"].front_default,
+//         }}
+//         style={styles.image}
+//       />
+//       <Text style={styles.name}>{pokemon.name}</Text>
+//     </View>
+//   );
+// }
+
+export function PokemonCard({ url, name }: PokemonCardProps) {
   const getPokemon = async () => {
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      setPokemon(data);
+      //   const res = await fetch(url);
+      //   const data = await res.json();
+      //   return data;
+      //   return fetchFn(url); //nueva función fetch desde utils
     } catch (error: any) {
       console.log("Error al obtener datos del pokemon - ", error.message);
     }
   };
 
-  useEffect(() => {
-    getPokemon();
-  }, []);
+  // const [pokemon, setPokemon] = useState<Pokemon>();
+  const { isLoading, error, data } = useQuery<Pokemon>({
+    queryKey: ["pokemon", name],
+    queryFn: () => fetchFn(url),
+  });
 
-  if (!pokemon) return null;
+  if (!data || error) {
+    if (error) console.log(error.message);
+    return null;
+  }
+
+  if (isLoading) return <ActivityIndicator />;
+
   return (
     <View style={styles.container}>
       <Image
         source={{
-          uri: pokemon.sprites.other["official-artwork"].front_default,
+          uri: data.sprites.other["official-artwork"].front_default,
         }}
         style={styles.image}
       />
-      <Text style={styles.name}>{pokemon.name}</Text>
+      <Text style={styles.name}>{data.name}</Text>
     </View>
   );
 }
