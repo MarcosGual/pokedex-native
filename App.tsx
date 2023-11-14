@@ -11,10 +11,12 @@ export default function App() {
     // <QueryClientProvider client={queryClient}>
     //   <Home />
     // </QueryClientProvider>
-    <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <MainNavigator />
-      </NavigationContainer>
-    </QueryClientProvider>
+    <NativeBaseProvider>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <MainNavigator />
+        </NavigationContainer>
+      </QueryClientProvider>
+    </NativeBaseProvider>
   );
 }

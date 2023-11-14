@@ -1,39 +1,32 @@
-import { View, Image, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  // Image,
+  // Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query/";
 import { fetchFn } from "../utils/api";
-// import {
-//   Box,
-//   Heading,
-//   Image,
-//   Text,
-//   HStack,
-//   Stack,
-//   Pressable,
-//   Center,
-// } from "native-base";
+import { useNavigation } from "@react-navigation/native";
+import { Pokemon } from "../utils/api";
+import { MainStackScreenProps } from "../navigators/types";
+import {
+  Box,
+  Heading,
+  Image,
+  Text,
+  HStack,
+  Stack,
+  Pressable,
+  Center,
+  AspectRatio,
+} from "native-base";
 
 interface PokemonCardProps {
   url: string;
   name: string;
-}
-
-interface Pokemon {
-  name: string;
-  order: number;
-  sprites: {
-    other: {
-      "official-artwork": {
-        front_default: string;
-      };
-    };
-  };
-  types: {
-    slot: number;
-    type: {
-      name: string;
-    };
-  };
 }
 
 // export function PokemonCard({ url, name }: PokemonCardProps) {
@@ -86,6 +79,9 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
     queryFn: () => fetchFn(url),
   });
 
+  const navigation =
+    useNavigation<MainStackScreenProps<"Home">["navigation"]>();
+
   if (!data || error) {
     if (error) console.log(error.message);
     return null;
@@ -94,15 +90,49 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
   if (isLoading) return <ActivityIndicator />;
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={{
-          uri: data.sprites.other["official-artwork"].front_default,
-        }}
-        style={styles.image}
-      />
-      <Text style={styles.name}>{data.name}</Text>
-    </View>
+    <Pressable
+      // style={styles.container}
+      onPress={() => navigation.navigate("Detail", { name })}
+      flex={1}
+      m="1.5"
+      p="4"
+      backgroundColor="#7e909a"
+      borderRadius={10}
+    >
+      <Center>
+        <AspectRatio ratio={1} width="80%">
+          <Image
+            source={{
+              uri: data.sprites.other["official-artwork"].front_default,
+            }}
+            alt="image"
+            // style={styles.image}
+          />
+        </AspectRatio>
+      </Center>
+      <HStack justifyContent="space-between" mb={2}>
+        <Heading textTransform="capitalize" color="white" size="small">
+          {data.name}
+        </Heading>
+        <Text color="white">#{data.order}</Text>
+      </HStack>
+      <HStack>
+        {data.types.map((type) => (
+          <Box
+            key={type.type.name}
+            px={2}
+            mr={1}
+            backgroundColor="#dbae58"
+            borderRadius={10}
+            _text={{ color: "white", fontSize: "xs" }}
+          >
+            {type.type.name}
+          </Box>
+        ))}
+      </HStack>
+      {/* <Text style={styles.name}> */}
+      {/* <Text>{data.name}</Text> */}
+    </Pressable>
   );
 }
 

@@ -1,4 +1,4 @@
-interface Pokemon {
+export interface Pokemon {
   name: string;
   order: number;
   sprites: {
@@ -13,7 +13,7 @@ interface Pokemon {
     type: {
       name: string;
     };
-  };
+  }[];
 }
 
 export interface AllPokemon {

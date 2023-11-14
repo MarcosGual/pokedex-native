@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
+  // FlatList,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { Center, Spinner, FlatList } from "native-base";
 import { PokemonCard } from "../components/PokemonCard";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { AllPokemon, getAllPokemon } from "../utils/api";
@@ -64,22 +65,27 @@ export default function Home() {
     getPokemon();
   }, []);
 
-  if (isLoadingMore) return <ActivityIndicator />;
+  // if (isLoadingMore) return <ActivityIndicator />;
+  if (isLoadingMore)
+    return (
+      <Center flex={1}>
+        <Spinner size="lg" color="black" />
+      </Center>
+    );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={pokemon}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
-          <PokemonCard url={item.url} name={item.name} />
-        )}
-        onEndReached={loadMore}
-        ListFooterComponent={() =>
-          isLoadingMore ? <ActivityIndicator /> : null
-        }
-      />
-    </SafeAreaView>
+    <FlatList
+      data={pokemon}
+      keyExtractor={(item) => item.name}
+      renderItem={({ item }) => <PokemonCard url={item.url} name={item.name} />}
+      onEndReached={loadMore}
+      numColumns={2}
+      contentInsetAdjustmentBehavior="automatic"
+      ListFooterComponent={() =>
+        isLoadingMore ? <Spinner mt="4" size="lg" color="black" /> : null
+      }
+      _contentContainerStyle={{ p: 2, bg: "white" }}
+    />
   );
 }
 
