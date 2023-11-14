@@ -62,16 +62,6 @@ interface PokemonCardProps {
 // }
 
 export function PokemonCard({ url, name }: PokemonCardProps) {
-  const getPokemon = async () => {
-    try {
-      //   const res = await fetch(url);
-      //   const data = await res.json();
-      //   return data;
-      //   return fetchFn(url); //nueva función fetch desde utils
-    } catch (error: any) {
-      console.log("Error al obtener datos del pokemon - ", error.message);
-    }
-  };
 
   // const [pokemon, setPokemon] = useState<Pokemon>();
   const { isLoading, error, data } = useQuery<Pokemon>({
@@ -91,7 +81,6 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
 
   return (
     <Pressable
-      // style={styles.container}
       onPress={() => navigation.navigate("Detail", { name })}
       flex={1}
       m="1.5"
@@ -106,7 +95,6 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
               uri: data.sprites.other["official-artwork"].front_default,
             }}
             alt="image"
-            // style={styles.image}
           />
         </AspectRatio>
       </Center>
@@ -130,25 +118,6 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
           </Box>
         ))}
       </HStack>
-      {/* <Text style={styles.name}> */}
-      {/* <Text>{data.name}</Text> */}
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 8,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  image: {
-    width: 100,
-    height: 100,
-    marginRight: 32,
-  },
-  name: {
-    fontWeight: "bold",
-    fontSize: 32,
-  },
-});

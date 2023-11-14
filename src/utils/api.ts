@@ -38,10 +38,14 @@ export async function fetchFn(endpoint: string) {
 }
 
 export async function getAllPokemon({ pageParam }: { pageParam?: string }) {
-  try {
-    const res = await fetch(pageParam || "https://pokeapi.co/api/v2/pokemon");
-    return res.json();
-  } catch (error: any) {
-    console.log("Error al obtener datos del pokemon - ", error.message);
+  const res = await fetch(
+    pageParam ? pageParam : "https://pokeapi.co/api/v2/pokemon"
+  );
+
+  if (!res.ok) {
+    console.log("Falla al obtener los pokemon", res);
   }
+
+  const data = await res.json();
+  return data;
 }
