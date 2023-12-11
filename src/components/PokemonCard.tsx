@@ -1,12 +1,6 @@
 import {
-  View,
-  // Image,
-  // Text,
-  StyleSheet,
   ActivityIndicator,
-  TouchableOpacity,
 } from "react-native";
-import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query/";
 import { fetchFn } from "../utils/api";
 import { useNavigation } from "@react-navigation/native";
@@ -18,52 +12,22 @@ import {
   Image,
   Text,
   HStack,
-  Stack,
   Pressable,
   Center,
   AspectRatio,
+  Spinner,
+  Stack,
+  Skeleton,
 } from "native-base";
+import { formatNumber, getColorType } from "../utils/helper";
 
 interface PokemonCardProps {
   url: string;
   name: string;
 }
 
-// export function PokemonCard({ url, name }: PokemonCardProps) {
-//   const [pokemon, setPokemon] = useState<Pokemon>();
-
-//   const getPokemon = async () => {
-//     try {
-//       const res = await fetch(url);
-//       const data = await res.json();
-
-//       setPokemon(data);
-//     } catch (error: any) {
-//       console.log("Error al obtener datos del pokemon - ", error.message);
-//     }
-//   };
-
-//   useEffect(() => {
-//     getPokemon();
-//   }, []);
-
-//   if (!pokemon) return null;
-//   return (
-//     <View style={styles.container}>
-//       <Image
-//         source={{
-//           uri: pokemon.sprites.other["official-artwork"].front_default,
-//         }}
-//         style={styles.image}
-//       />
-//       <Text style={styles.name}>{pokemon.name}</Text>
-//     </View>
-//   );
-// }
-
 export function PokemonCard({ url, name }: PokemonCardProps) {
 
-  // const [pokemon, setPokemon] = useState<Pokemon>();
   const { isLoading, error, data } = useQuery<Pokemon>({
     queryKey: ["pokemon", name],
     queryFn: () => fetchFn(url),
@@ -77,15 +41,28 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
     return null;
   }
 
-  if (isLoading) return <ActivityIndicator />;
+  if (isLoading) return (
+    <Stack
+      flex={1}
+      space={2}
+      borderRadius={10}
+      m='1.5'
+      p='4'>
+      <Skeleton h='30' />
+      <Skeleton.Text px='4' />
+    </Stack>
+  );
+
+  if (!data || error) return null;
 
   return (
     <Pressable
-      onPress={() => navigation.navigate("Detail", { name })}
+      onPress={() => navigation.navigate("Detail", { name, url })}
       flex={1}
       m="1.5"
       p="4"
-      backgroundColor="#7e909a"
+      // backgroundColor="#7e909a"
+      backgroundColor={getColorType(data.types[0].type.name) + '.500'}
       borderRadius={10}
     >
       <Center>
@@ -102,7 +79,7 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
         <Heading textTransform="capitalize" color="white" size="small">
           {data.name}
         </Heading>
-        <Text color="white">#{data.order}</Text>
+        <Text color="white">#{formatNumber(data.id)}</Text>
       </HStack>
       <HStack>
         {data.types.map((type) => (
@@ -110,7 +87,8 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
             key={type.type.name}
             px={2}
             mr={1}
-            backgroundColor="#dbae58"
+            // backgroundColor="#dbae58"
+            backgroundColor={getColorType(type.type.name) + '.400'}
             borderRadius={10}
             _text={{ color: "white", fontSize: "xs" }}
           >

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Center, Spinner, FlatList } from "native-base";
+import { Center, Spinner, FlatList, HStack, Heading } from "native-base";
 import { PokemonCard } from "../components/PokemonCard";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { AllPokemon, getAllPokemon } from "../utils/api";
@@ -17,17 +17,20 @@ export default function Home() {
       getNextPageParam: (lastPage: any) => lastPage.next,
     });
 
-  const loadMore=()=>{
-    if(hasNextPage){
+  const loadMore = () => {
+    if (hasNextPage) {
       fetchNextPage();
     }
   }
 
   if (isLoading)
     return (
-      <Center flex={1}>
-        <Spinner size="lg" color="black" />
-      </Center>
+      <HStack space={2} justifyContent="center">
+        <Spinner accessibilityLabel="Loading posts" color="black" />
+        <Heading color="black" fontSize="md">
+          Cargando
+        </Heading>
+      </HStack>
     );
 
   if (!data) return null;
@@ -41,7 +44,7 @@ export default function Home() {
       numColumns={2}
       contentInsetAdjustmentBehavior="automatic"
       ListFooterComponent={() =>
-        isLoading ? <Spinner mt="4" size="lg" color="black" /> : null
+        isFetchingNextPage ? <Spinner mt="4" size="lg" color="black" /> : null
       }
       _contentContainerStyle={{ p: 2, bg: "white" }}
     />
