@@ -24,7 +24,11 @@ export function MainNavigator() {
           ),
         })}
       ></Stack.Screen>
-      <Stack.Screen name="Detail" component={Detail}></Stack.Screen>
+      <Stack.Screen name="Detail" component={Detail} options={{
+        headerTitle: '',
+        headerTransparent: true,
+        headerTintColor: 'white'
+      }} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Search" component={Search} />
       </Stack.Group>
