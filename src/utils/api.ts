@@ -23,7 +23,7 @@ export interface Pokemon {
 export interface Species {
   flavor_text_entries: {
     flavor_text: string;
-  }
+  }[]
 }
 
 export interface AllPokemon {
@@ -58,4 +58,12 @@ export async function getAllPokemon({ pageParam }: { pageParam?: string }) {
 
   const data = await res.json();
   return data;
+}
+
+export async function fetchPokemon(name: string){
+  const response = await fetch('https://pokeapi.co/api/v2/pokemon/'+name)
+  if(!response.ok){
+    throw new Error(`Pokémon ${name} not found.`)
+  }
+  return response.json();
 }

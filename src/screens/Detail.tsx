@@ -1,16 +1,15 @@
 import { View, Text, Stack, Center, AspectRatio, Image, HStack, Heading, Skeleton } from "native-base";
 import { MainStackScreenProps } from "../navigators/types";
 import { useQuery } from "@tanstack/react-query";
-import { Pokemon, Species, fetchFn } from "../utils/api";
+import { Pokemon, Species, fetchFn, fetchPokemon } from "../utils/api";
 import { formatNumber, getColorType, removeEscapeCharacters } from "../utils/helper";
 
 export default function Detail({ route }: MainStackScreenProps<"Detail">) {
-  const { name, url } = route.params;
-  console.log(url)
+  const { name } = route.params;
 
   const { isLoading, error, data } = useQuery<Pokemon>({
     queryKey: ["pokemon", name],
-    queryFn: () => fetchFn(url),
+    queryFn: () => fetchPokemon(name),
   });
 
   const { isLoading: isSpeciesLoading, error: speciesError, data: species } = useQuery<Species>({
@@ -29,7 +28,7 @@ export default function Detail({ route }: MainStackScreenProps<"Detail">) {
         safeArea
         backgroundColor={getColorType(data.types[0].type.name) + '.500'}
       >
-        <AspectRatio ratio={1} width="90%">
+        <AspectRatio ratio={1} width="90%" mb='5'>
           <Image source={{ uri: data.sprites.other['official-artwork'].front_default }}
             alt={name + ' image.'} />
         </AspectRatio>

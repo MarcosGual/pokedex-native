@@ -2,7 +2,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useQuery } from "@tanstack/react-query/";
-import { fetchFn } from "../utils/api";
+import { fetchFn, fetchPokemon } from "../utils/api";
 import { useNavigation } from "@react-navigation/native";
 import { Pokemon } from "../utils/api";
 import { MainStackScreenProps } from "../navigators/types";
@@ -30,7 +30,7 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
 
   const { isLoading, error, data } = useQuery<Pokemon>({
     queryKey: ["pokemon", name],
-    queryFn: () => fetchFn(url),
+    queryFn: () => fetchPokemon(name),
   });
 
   const navigation =
@@ -57,7 +57,7 @@ export function PokemonCard({ url, name }: PokemonCardProps) {
 
   return (
     <Pressable
-      onPress={() => navigation.navigate("Detail", { name, url })}
+      onPress={() => navigation.navigate("Detail", { name })}
       flex={1}
       m="1.5"
       p="4"
